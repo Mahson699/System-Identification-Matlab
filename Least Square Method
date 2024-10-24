@@ -1,0 +1,29 @@
+
+%% Another Methods like RLS, LMS, SA,.... in my blog : <<< https://mahsonrash.blogspot.com >>>
+clc
+%  LAST SQEARE IDENTIFICATION    >>>  LS   <<<
+% S=readmatrix('system_estimation_exel.xlsx');
+% u = S(:,2)';
+% y = S(:,4)';
+u = wgn(100,1,100);
+[m n]=size(u);
+y = zeros(m,n); 
+for j = 3:100
+y(j,1) = u(j-1,1) + 1.44*u(j,1) - 0.777*y(j-1,1)- 0.111*y(j-2,1);
+end
+N = 4;
+M = 100;
+Phi = zeros(M,N);   % matrix of data 
+Y = zeros(M,1);      % output matrix
+for t = N:M
+    Phi(t,:) = [u(t-1) u(t) -y(t-1) -y(t-2)];
+    Y(t) = y(t);
+end
+
+teta = (Phi'*Phi)\Phi'*Y;
+disp('System parameters with LS:')
+teta
+teta_orginal=[1;1.444;0.777;0.111];
+errorLS = immse(teta,teta_orginal)
+
+%% ---------------------------------------------------------
